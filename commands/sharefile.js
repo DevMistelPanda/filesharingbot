@@ -26,7 +26,7 @@ module.exports = {
     const embed = new EmbedBuilder()
       .setTitle(title)
       .setURL(link)
-      .setColor(interaction.member.accentColor || 0x2f3136) // fallback to Discord embed bg gray if something goes wrong
+      .setColor(interaction.member.displayColor || 0x2f3136) // fallback to Discord embed bg gray if something goes wrong
       .addFields({ name: 'Link', value: `[Open File](${link})`, inline: false })
       .setFooter({ text: `Filed by ${interaction.user.username}` })
       .setTimestamp();
