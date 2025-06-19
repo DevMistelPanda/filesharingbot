@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/DevMistelPanda/filesharingbot#readme",
   "dependencies": {
+    "chrono-node": "^2.8.3",
     "discord.js": "^14.20.0"
   }
 }
