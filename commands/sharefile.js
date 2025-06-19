@@ -18,6 +18,7 @@ module.exports = {
     
   async execute(interaction) {
     const title = interaction.options.getString('title');
+    const link = interaction.options.getString('link');
     const details = interaction.options.getString('details');
     const lastUpdateInput = interaction.options.getString('lastupdate');
     const mention = interaction.options.getUser('mention');
@@ -25,7 +26,7 @@ module.exports = {
     const embed = new EmbedBuilder()
       .setTitle(title)
       .setURL(link)
-      .setColor(interaction.member.displayColor || 0x2f3136) // fallback to Discord embed bg gray if something goes wrong
+      .setColor(interaction.member.accentColor || 0x2f3136) // fallback to Discord embed bg gray if something goes wrong
       .addFields({ name: 'Link', value: `[Open File](${link})`, inline: false })
       .setFooter({ text: `Filed by ${interaction.user.username}` })
       .setTimestamp();
