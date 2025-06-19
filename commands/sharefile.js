@@ -6,6 +6,8 @@ module.exports = {
     .setName('sharefile')
     .setDescription('Share a file with metadata')
     .addStringOption(option =>
+        option.setName('link').setDescription('The Link to your File').setRequired(true))
+    .addStringOption(option =>
       option.setName('title').setDescription('The title of the file').setRequired(true))
     .addStringOption(option =>
       option.setName('details').setDescription('Optional details').setRequired(false))
@@ -22,8 +24,10 @@ module.exports = {
 
     const embed = new EmbedBuilder()
       .setTitle(title)
-      .setColor(0x3498db)
-      .setFooter({ text: `Uploaded by ${interaction.user.username}` })
+      .setURL(link)
+      .setColor(interaction.member.displayColor || 0x2f3136) // fallback to Discord embed bg gray if something goes wrong
+      .addFields({ name: 'Link', value: `[Open File](${link})`, inline: false })
+      .setFooter({ text: `Filed by ${interaction.user.username}` })
       .setTimestamp();
 
     if (details) {
@@ -32,7 +36,7 @@ module.exports = {
 
     if (lastUpdateInput) {
       const formatted = formatDate(lastUpdateInput);
-      embed.addFields({ name: 'Last Update', value: formatted || 'Invalid date format', inline: true });
+      embed.addFields({ name: 'Last Update', value: formatted || lastUpdateInput, inline: true });
     }
 
     const content = mention ? `${mention}` : null;
