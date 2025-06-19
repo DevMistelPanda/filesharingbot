@@ -1,13 +1,25 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const parseTimestamp = require('../utils/parseTimestamp');
 
+/**
+ * Light check for valid-looking URLs
+ */
+function isValidUrl(link) {
+  try {
+    const url = new URL(link.startsWith('http') ? link : `https://${link}`);
+    return !!url.hostname;
+  } catch (e) {
+    return false;
+  }
+}
+
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('sharefile')
     .setDescription('Share a file with metadata')
     .addStringOption(option =>
       option.setName('link')
-        .setDescription('The Link to your File')
+        .setDescription('The link to your file (e.g. test.com)')
         .setRequired(true))
     .addStringOption(option =>
       option.setName('title')
@@ -19,18 +31,30 @@ module.exports = {
         .setRequired(false))
     .addStringOption(option =>
       option.setName('lastupdate')
-        .setDescription('Last update date/time')
+        .setDescription('Last update date/time (optional)')
         .setRequired(false))
     .addUserOption(option =>
       option.setName('mention')
-        .setDescription('Tag a user')),
+        .setDescription('Tag a user who should see this')),
 
   async execute(interaction) {
     const title = interaction.options.getString('title');
-    const link = interaction.options.getString('link');
+    const rawLink = interaction.options.getString('link');
     const details = interaction.options.getString('details');
     const lastUpdateInput = interaction.options.getString('lastupdate');
     const mention = interaction.options.getUser('mention');
+
+    // Normalize and validate link
+    const link = rawLink.startsWith('http://') || rawLink.startsWith('https://')
+      ? rawLink
+      : `https://${rawLink}`;
+
+    if (!isValidUrl(link)) {
+      return await interaction.reply({
+        content: '❌ The link you entered doesn’t appear to be valid. Try using a full domain like `example.com` or `https://example.com`.',
+        ephemeral: true
+      });
+    }
 
     const embed = new EmbedBuilder()
       .setTitle(title)
