@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { Client, Collection, GatewayIntentBits } = require('discord.js');
+const { Client, Collection, GatewayIntentBits, InteractionType } = require('discord.js');
 const { token } = require('./config.json');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
@@ -19,6 +19,20 @@ client.once('ready', () => {
 });
 
 client.on('interactionCreate', async interaction => {
+  if (interaction.type === InteractionType.ModalSubmit) {
+    const commandName = interaction.customId.split('-')[0];
+    const command = client.commands.get(commandName);
+    if (command && typeof command.handleModalSubmit === 'function') {
+      try {
+        await command.handleModalSubmit(interaction);
+      } catch (error) {
+        console.error(error);
+        await interaction.reply({ content: 'There was an error handling the modal submission!', ephemeral: true });
+      }
+    }
+    return;
+  }
+
   if (!interaction.isChatInputCommand()) return;
 
   const command = client.commands.get(interaction.commandName);

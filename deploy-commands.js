@@ -34,6 +34,12 @@ const rest = new REST({ version: '10' }).setToken(token);
 
     console.log('Successfully reloaded application (guild) commands.');
   } catch (error) {
-    console.error(error);
+    console.error(error);    const commandsPath = path.join(__dirname, 'commands');
+    const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+    
+    for (const file of commandFiles) {
+      const command = require(path.join(commandsPath, file));
+      commands.push(command.data.toJSON());
+    }
   }
 })();
