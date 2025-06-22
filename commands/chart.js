@@ -55,7 +55,7 @@ module.exports = {
     const type = interaction.customId.replace('chart-modal-', '');
     const username = interaction.fields.getTextInputValue('username');
     const password = interaction.fields.getTextInputValue('password');
-    const url = `http://localhost:4000/api/stats/chart/${type}/image`;
+    const url = `http://localhost:3000/api/stats/chart/${type}/image`;
 
     try {
       // The backend should verify:
